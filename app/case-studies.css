@@ -550,6 +550,331 @@
   text-transform: uppercase;
 }
 
+.lifecycle-timeline {
+  list-style: none;
+  margin: 34px 0 0;
+  padding: 0 0 0 28px;
+  position: relative;
+}
+
+.lifecycle-timeline::before {
+  background: var(--border);
+  bottom: 18px;
+  content: '';
+  left: 7px;
+  position: absolute;
+  top: 18px;
+  width: 1px;
+}
+
+.lifecycle-entry {
+  padding: 0 0 24px;
+  position: relative;
+}
+
+.lifecycle-entry:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-marker {
+  background: var(--bg);
+  border: 2px solid var(--blue);
+  height: 11px;
+  left: -26px;
+  position: absolute;
+  top: 23px;
+  width: 11px;
+  z-index: 1;
+}
+
+.lifecycle-entry details,
+.lifecycle-static-summary,
+.roadmap-entry article {
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.lifecycle-entry summary {
+  cursor: pointer;
+  list-style-position: outside;
+  min-height: 72px;
+  padding: 18px 20px;
+}
+
+.lifecycle-entry summary:hover {
+  background: var(--surface);
+}
+
+.lifecycle-summary,
+.roadmap-heading,
+.incident-entry summary {
+  align-items: flex-start;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.roadmap-heading h3,
+.lifecycle-title {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.08;
+  margin: 5px 0 0;
+}
+
+.lifecycle-code {
+  color: var(--blue);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.lifecycle-summary-meta {
+  align-items: flex-end;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.lifecycle-summary-meta time {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.lifecycle-static-summary {
+  padding: 18px 20px;
+}
+
+.lifecycle-details,
+.incident-details {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 22px;
+}
+
+.lifecycle-details > p {
+  font-size: 14px;
+  margin-top: 0;
+}
+
+.lifecycle-dates,
+.roadmap-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 32px;
+  margin: 20px 0;
+}
+
+.lifecycle-dates div,
+.roadmap-meta div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.lifecycle-dates dt,
+.roadmap-meta dt {
+  color: var(--text);
+  font: 9px 'DM Mono';
+  text-transform: uppercase;
+}
+
+.lifecycle-dates dd,
+.roadmap-meta dd {
+  color: var(--muted);
+  font-size: 11px;
+  margin: 0;
+}
+
+.lifecycle-detail-group {
+  border-top: 1px solid var(--border);
+  padding: 16px 0 0;
+}
+
+.lifecycle-detail-group + .lifecycle-detail-group {
+  margin-top: 16px;
+}
+
+.lifecycle-detail-group > strong,
+.lifecycle-relations > strong,
+.incident-detail > strong,
+.roadmap-relation > strong,
+.roadmap-dependencies > strong {
+  color: var(--text);
+  display: block;
+  font: 10px 'DM Mono';
+  text-transform: uppercase;
+}
+
+.lifecycle-detail-group ul,
+.incident-detail ul,
+.roadmap-dependencies ul {
+  margin: 9px 0 0;
+  padding-left: 19px;
+}
+
+.lifecycle-detail-group li,
+.incident-detail li,
+.roadmap-dependencies li {
+  color: var(--muted);
+  font-size: 12px;
+  padding: 3px 0;
+}
+
+.lifecycle-detail-group a,
+.lifecycle-relations a,
+.incident-version-links a,
+.roadmap-relation a,
+.roadmap-dependencies a {
+  color: var(--blue);
+  font-weight: 700;
+}
+
+.lifecycle-relations {
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 18px;
+  padding-top: 16px;
+}
+
+.lifecycle-relations a {
+  font-size: 12px;
+}
+
+.version-published,
+.roadmap-completed,
+.incident-resolved {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #5a9a79 45%, transparent);
+  color: #477d63;
+}
+
+.version-cancelled,
+.roadmap-cancelled {
+  background: var(--border);
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.version-in-development,
+.roadmap-in-development,
+.incident-fixing,
+.incident-monitoring {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--blue) 38%, transparent);
+}
+
+.incident-list {
+  border-top: 1px solid var(--border);
+  margin-top: 34px;
+}
+
+.incident-entry {
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: 100px;
+}
+
+.incident-entry details {
+  background: transparent;
+}
+
+.incident-entry summary {
+  cursor: pointer;
+  list-style-position: outside;
+  min-height: 76px;
+  padding: 20px 2px;
+}
+
+.incident-entry summary:hover {
+  color: var(--blue);
+}
+
+.incident-details {
+  display: grid;
+  gap: 22px;
+  margin-bottom: 20px;
+}
+
+.incident-detail p {
+  font-size: 13px;
+  margin: 6px 0 0;
+}
+
+.incident-version-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 8px;
+}
+
+.incident-version-links a,
+.incident-version-links p {
+  font-size: 12px;
+  margin: 0;
+}
+
+.incident-version-links span {
+  font-family: 'DM Mono';
+  font-size: 10px;
+}
+
+.roadmap-entry {
+  scroll-margin-top: 100px;
+}
+
+.roadmap-entry article {
+  padding: 20px;
+}
+
+.roadmap-entry article > p {
+  font-size: 13px;
+  margin: 14px 0 0;
+}
+
+.roadmap-meta {
+  border-top: 1px solid var(--border);
+  margin-bottom: 0;
+  padding-top: 16px;
+}
+
+.roadmap-relation,
+.roadmap-dependencies {
+  border-top: 1px solid var(--border);
+  margin-top: 16px;
+  padding-top: 14px;
+}
+
+.roadmap-relation a,
+.roadmap-relation span {
+  display: inline-block;
+  font: 11px 'DM Mono';
+  margin-top: 7px;
+}
+
+.roadmap-dependencies ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.roadmap-dependencies li {
+  border-bottom: 1px solid var(--border);
+}
+
+.roadmap-dependencies span {
+  font-family: 'DM Mono';
+  font-size: 10px;
+}
+
+.roadmap-under-study,
+.roadmap-planned,
+.version-planned,
+.incident-identified,
+.incident-investigating {
+  border: 1px dashed var(--border);
+  background: transparent;
+}
+
 @media (max-width: 850px) {
   body:has(.case-study) .nav {
     align-items: stretch;
@@ -699,10 +1024,47 @@
   }
 
   .solution-heading,
-  .result-heading {
+  .result-heading,
+  .lifecycle-summary,
+  .roadmap-heading,
+  .incident-entry summary {
     align-items: flex-start;
     flex-direction: column;
     gap: 8px;
+  }
+
+  .lifecycle-timeline {
+    padding-left: 21px;
+  }
+
+  .timeline-marker {
+    left: -19px;
+  }
+
+  .lifecycle-entry summary,
+  .lifecycle-static-summary,
+  .roadmap-entry article {
+    padding: 16px;
+  }
+
+  .lifecycle-summary-meta {
+    align-items: flex-start;
+  }
+
+  .lifecycle-details,
+  .incident-details {
+    padding: 17px;
+  }
+
+  .lifecycle-dates,
+  .roadmap-meta {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .incident-version-links {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .case-cta {

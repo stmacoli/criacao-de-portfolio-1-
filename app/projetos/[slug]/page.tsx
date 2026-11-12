@@ -4,14 +4,17 @@ import { notFound } from 'next/navigation'
 import { ProjectArchitecture } from '@/components/projects/project-architecture'
 import { ProjectDecisions } from '@/components/projects/project-decisions'
 import { ProjectHeader } from '@/components/projects/project-header'
+import { ProjectIncidentHistory } from '@/components/projects/project-incident-history'
 import { ProjectLearnings } from '@/components/projects/project-learnings'
 import { ProjectNavigation, type ProjectNavigationItem } from '@/components/projects/project-navigation'
 import { ProjectNextSteps } from '@/components/projects/project-next-steps'
 import { ProjectOverview } from '@/components/projects/project-overview'
 import { ProjectProblems } from '@/components/projects/project-problems'
 import { ProjectResults } from '@/components/projects/project-results'
+import { ProjectRoadmap } from '@/components/projects/project-roadmap'
 import { ProjectSolutions } from '@/components/projects/project-solutions'
 import { ProjectTechnologies } from '@/components/projects/project-technologies'
+import { ProjectVersionHistory } from '@/components/projects/project-version-history'
 import { getProjectBySlug, projects } from '@/lib/projects'
 
 export function generateStaticParams() {
@@ -33,6 +36,9 @@ export default async function CaseStudy({
   const solutions = project.caseStudy?.solutions ?? []
   const decisions = project.caseStudy?.decisions ?? []
   const results = project.caseStudy?.results ?? []
+  const versions = project.caseStudy?.versions ?? []
+  const incidents = project.caseStudy?.incidents ?? []
+  const roadmap = project.caseStudy?.roadmap ?? []
   const learnings = project.caseStudy?.learnings ?? []
 
   const navigationItems: ProjectNavigationItem[] = [
@@ -43,8 +49,11 @@ export default async function CaseStudy({
     { id: 'arquitetura', label: 'Arquitetura' },
     ...(decisions.length ? [{ id: 'decisoes', label: 'Decisões' }] : []),
     ...(results.length ? [{ id: 'resultados', label: 'Resultados' }] : []),
+    ...(versions.length ? [{ id: 'historico-versoes', label: 'Versões' }] : []),
+    ...(incidents.length ? [{ id: 'ocorrencias', label: 'Ocorrências' }] : []),
+    ...(roadmap.length ? [{ id: 'roadmap', label: 'Roadmap' }] : []),
     ...(learnings.length ? [{ id: 'aprendizados', label: 'Aprendizados' }] : []),
-    { id: 'proximos-passos', label: 'Próximos passos' },
+    ...(!roadmap.length ? [{ id: 'proximos-passos', label: 'Próximos passos' }] : []),
   ]
 
   return (
@@ -74,8 +83,15 @@ export default async function CaseStudy({
           <ProjectArchitecture project={project} />
           {!!decisions.length && <ProjectDecisions decisions={decisions} />}
           {!!results.length && <ProjectResults results={results} />}
+          {!!versions.length && (
+            <ProjectVersionHistory versions={versions} incidents={incidents} />
+          )}
+          {!!incidents.length && (
+            <ProjectIncidentHistory incidents={incidents} versions={versions} />
+          )}
+          {!!roadmap.length && <ProjectRoadmap roadmap={roadmap} versions={versions} />}
           {!!learnings.length && <ProjectLearnings learnings={learnings} />}
-          <ProjectNextSteps />
+          {!roadmap.length && <ProjectNextSteps />}
 
           <div className={'case-next'}>
             <span className={'mono'}>PRÓXIMO PROJETO</span>
