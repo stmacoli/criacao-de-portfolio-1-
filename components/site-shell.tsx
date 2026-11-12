@@ -12,11 +12,37 @@ const nav = [{ href: '/', label: 'Início' }, { href: '/projetos', label: 'Proje
 export function Header() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
+  const headerRef = useRef<HTMLElement>(null)
   const menuRef = useRef<HTMLElement>(null)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
   useEffect(() => { setOpen(false) }, [pathname])
-  useEffect(() => { if (!open) return; const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') setOpen(false) }; document.addEventListener('keydown', onKey); return () => document.removeEventListener('keydown', onKey) }, [open])
+  useEffect(() => {
+    if (!open) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpen(false)
+        menuButtonRef.current?.focus()
+      }
+    }
+    const onPointerDown = (event: PointerEvent) => {
+      if (!headerRef.current?.contains(event.target as Node)) setOpen(false)
+    }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerdown', onPointerDown)
+    }
+  }, [open])
+  useEffect(() => {
+    const desktop = window.matchMedia('(min-width: 851px)')
+    const closeOnDesktop = (event: MediaQueryListEvent) => { if (event.matches) setOpen(false) }
+    desktop.addEventListener('change', closeOnDesktop)
+    return () => desktop.removeEventListener('change', closeOnDesktop)
+  }, [])
   const isActive = (href: string) => href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`)
-  return <header className="site-header"><div className="container header-inner"><Link href="/" className="brand" aria-label="Steven Oliveira, início"><span className="brand-mark">SO</span><span>Steven Oliveira</span></Link><nav id="main-navigation" ref={menuRef} className={open ? 'nav mobile-open' : 'nav'} aria-label="Navegação principal">{nav.map(item => <Link key={item.href} href={item.href} className={isActive(item.href) ? 'active' : ''} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</Link>)}<Link href="/contato" className="header-cta">Vamos conversar <ArrowUpRight /></Link></nav><div className="header-actions"><ThemeToggle /><button className="mobile-menu" onClick={() => setOpen(value => !value)} aria-label={open ? 'Fechar menu' : 'Abrir menu'} aria-expanded={open} aria-controls="main-navigation">{open ? <X /> : <Menu />}</button></div></div></header>
+  const closeMenu = () => setOpen(false)
+  return <header className="site-header" ref={headerRef}><div className="container header-inner"><Link href="/" className="brand" aria-label="Steven Oliveira, início" onClick={closeMenu}><span className="brand-mark">SO</span><span>Steven Oliveira</span></Link><div className="header-controls"><nav id="main-navigation" ref={menuRef} className={open ? 'nav mobile-open' : 'nav'} aria-label="Navegação principal">{nav.map(item => <Link key={item.href} href={item.href} className={isActive(item.href) ? 'active' : ''} aria-current={isActive(item.href) ? 'page' : undefined} onClick={closeMenu}>{item.label}</Link>)}<Link href="/contato" className="header-cta" onClick={closeMenu}>Vamos conversar <ArrowUpRight /></Link></nav><div className={open ? 'header-actions theme-control mobile-menu-open' : 'header-actions theme-control'}><span className="mobile-theme-label">Tema</span><ThemeToggle /></div><Link href="/contato" className="mobile-header-cta" onClick={closeMenu}>Vamos conversar</Link><button ref={menuButtonRef} type="button" className="mobile-menu" onClick={() => setOpen(value => !value)} aria-label={open ? 'Fechar menu' : 'Abrir menu'} aria-expanded={open} aria-controls="main-navigation">{open ? <X /> : <Menu />}</button></div></div></header>
 }
 
 export function Footer() {
