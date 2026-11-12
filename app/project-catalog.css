@@ -154,6 +154,16 @@
   object-position: center;
 }
 
+.catalog-card-reveal picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.catalog-card-touch-toggle {
+  display: none;
+}
+
 .catalog-card:hover,
 .catalog-card:focus-within {
   transform: translateY(-3px);
@@ -263,6 +273,77 @@
   }
 }
 
+@media (hover: none) and (pointer: coarse) {
+  .catalog-card.has-touch-reveal .catalog-card-reveal {
+    opacity: 0;
+    clip-path: none;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      #000 0%,
+      #000 42%,
+      transparent 58%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      #000 0%,
+      #000 42%,
+      transparent 58%,
+      transparent 100%
+    );
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 250% 100%;
+    mask-size: 250% 100%;
+    transition:
+      -webkit-mask-position 640ms cubic-bezier(.22, 1, .36, 1),
+      mask-position 640ms cubic-bezier(.22, 1, .36, 1),
+      opacity 0s linear 640ms;
+  }
+
+  .catalog-card.has-touch-reveal .catalog-card-reveal img {
+    object-position: center 24%;
+  }
+
+  .catalog-card.has-touch-reveal.is-touch-revealed .catalog-card-reveal {
+    opacity: 1;
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+    transition:
+      -webkit-mask-position 640ms cubic-bezier(.22, 1, .36, 1),
+      mask-position 640ms cubic-bezier(.22, 1, .36, 1),
+      opacity 0s;
+  }
+
+  .catalog-card.has-touch-reveal.is-touch-revealed .catalog-link {
+    background: rgb(9 14 23 / 88%);
+    box-shadow: 0 0 0 9px rgb(9 14 23 / 88%);
+    color: #fff;
+  }
+
+  .catalog-card-touch-toggle {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: transparent;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .catalog-card-touch-toggle:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: -4px;
+  }
+}
+
 .empty-state {
   text-align: center;
 }
@@ -324,7 +405,8 @@
   }
 
   .catalog-card.has-cover-reveal .catalog-card-reveal,
-  .catalog-card.has-cover-reveal .catalog-link {
+  .catalog-card.has-cover-reveal .catalog-link,
+  .catalog-card-touch-toggle {
     transition: none;
   }
 }

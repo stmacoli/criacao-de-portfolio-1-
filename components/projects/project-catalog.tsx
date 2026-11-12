@@ -18,6 +18,7 @@ interface ProjectCatalogProps {
 
 export function ProjectCatalog({ projects }: ProjectCatalogProps) {
   const [filters, setFilters] = useState<CatalogFilters>({})
+  const [touchRevealedSlug, setTouchRevealedSlug] = useState<string>()
   const categories = useMemo(() => getCatalogCategories(projects), [projects])
   const states = useMemo(() => getCatalogStates(projects), [projects])
   const technologies = useMemo(() => getCatalogTechnologies(projects), [projects])
@@ -33,8 +34,14 @@ export function ProjectCatalog({ projects }: ProjectCatalogProps) {
         categories={categories}
         states={states}
         technologies={technologies}
-        onChange={setFilters}
-        onClear={() => setFilters({})}
+        onChange={(nextFilters) => {
+          setFilters(nextFilters)
+          setTouchRevealedSlug(undefined)
+        }}
+        onClear={() => {
+          setFilters({})
+          setTouchRevealedSlug(undefined)
+        }}
       />
 
       <div className={'catalog-results'} aria-live={'polite'} aria-atomic={'true'}>
@@ -48,7 +55,16 @@ export function ProjectCatalog({ projects }: ProjectCatalogProps) {
       {visibleProjects.length ? (
         <div className={'catalog-grid'}>
           {visibleProjects.map((project) => (
-            <ProjectCard project={project} key={project.id} />
+            <ProjectCard
+              project={project}
+              key={project.id}
+              isTouchRevealed={touchRevealedSlug === project.slug}
+              onTouchRevealToggle={() => {
+                setTouchRevealedSlug((currentSlug) =>
+                  currentSlug === project.slug ? undefined : project.slug
+                )
+              }}
+            />
           ))}
         </div>
       ) : (
