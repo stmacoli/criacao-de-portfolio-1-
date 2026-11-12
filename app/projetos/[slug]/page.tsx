@@ -1,6 +1,99 @@
 import Link from 'next/link'
-import { ArrowLeft, ArrowRight, Check, Circle } from 'lucide-react'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { notFound } from 'next/navigation'
-import { projects } from '@/lib/projects'
-export function generateStaticParams() { return projects.map(project => ({ slug: project.slug })) }
-export default async function CaseStudy({ params }: { params: Promise<{ slug: string }> }) { const { slug } = await params; const project = projects.find(p => p.slug === slug); if (!project) notFound(); const index = projects.findIndex(p => p.slug === project.slug); const next = projects[(index + 1) % projects.length]; const isDropbox = project.slug === 'dropbox-manager'; return <main className="container case-study"><div className="breadcrumbs"><Link href="/"><span>Início</span></Link><span>/</span><Link href="/projetos">Projetos</Link><span>/</span><span>{project.title}</span></div><Link href="/projetos" className="back-link"><ArrowLeft /> Voltar aos projetos</Link><header className="case-header"><p className="eyebrow">{project.id} / {project.category.toUpperCase()}</p><h1>{project.title}</h1><p className="case-lead">{isDropbox ? 'Aplicação para gerenciamento de acervos digitais, reunindo pesquisa, organização de arquivos, metadados e automações em uma interface de trabalho.' : project.description}</p><div className="case-meta"><span><b>Status</b>{project.status}</span><span><b>Tecnologias</b>{project.technologies.join(' · ')}</span></div></header><div className="case-layout"><aside className="case-index"><span className="mono">NESTE PROJETO</span>{['Contexto','Abordagem','Arquitetura','Áreas técnicas','Próximos passos'].map((x,i) => <a href={`#section-${i}`} key={x}>{String(i+1).padStart(2,'0')} {x}</a>)}</aside><div className="case-content"><section id="section-0"><p className="eyebrow">CONTEXTO</p><h2>{isDropbox ? 'Organizar acervos exige mais do que pastas.' : 'O ponto de partida.'}</h2><p>{isDropbox ? 'Acervos digitais extensos exigem mais do que uma estrutura de pastas. É necessário localizar informações rapidamente, manter padrões de organização e acompanhar alterações sem depender exclusivamente de tarefas manuais.' : project.problem}</p></section><section id="section-1"><p className="eyebrow">ABORDAGEM</p><h2>{isDropbox ? 'Integração entre interface, serviços e dados.' : 'Uma abordagem específica para cada contexto.'}</h2><p>{isDropbox ? 'O projeto explora a integração entre uma interface de gerenciamento, serviços de processamento e APIs de armazenamento, com foco na consulta de arquivos, organização de metadados e automação de rotinas.' : project.solution}</p><div className="case-callout"><span className="mono">VISÃO DO PROJETO</span><p>Este estudo diferencia implementação existente, protótipo e planejamento. Não representa métricas ou resultados finais não verificados.</p></div></section><section id="section-2"><p className="eyebrow">ARQUITETURA</p><h2>Visão conceitual de sistema.</h2>{isDropbox ? <div className="case-flow"><span>Pesquisa</span><ArrowRight /><span>Organização</span><ArrowRight /><span>Processamento</span><ArrowRight /><span>Automação</span></div> : <div className="architecture-list">{project.architecture.map((item,i) => <div key={item}><span>{String(i+1).padStart(2,'0')}</span><Circle /><strong>{item}</strong>{i < project.architecture.length - 1 && <ArrowRight />}</div>)}</div>}</section><section id="section-3"><p className="eyebrow">ÁREAS TÉCNICAS</p><h2>Competências em prática.</h2><div className="check-list">{(isDropbox ? ['Interface — pesquisa, filtros, visualização de arquivos e navegação pela estrutura do acervo.','Integrações — comunicação com serviços e APIs para consulta e gerenciamento de informações.','Processamento — scripts e rotinas voltados à organização de arquivos e tratamento de metadados.','Automação — execução de tarefas repetitivas e apoio a fluxos de trabalho.','Evolução — estrutura preparada para novas funcionalidades e integrações.'] : [...project.responsibilities, ...project.outcomes]).map(item => <p key={item}><Check />{item}</p>)}</div></section><section id="section-4"><p className="eyebrow">PRÓXIMOS PASSOS</p><h2>Projeto em evolução.</h2><p>O próximo passo depende de validações, prioridades e do contexto de uso. A estrutura atual permite continuar investigando e refinando a solução.</p></section><div className="case-next"><span className="mono">PRÓXIMO PROJETO</span><Link href={`/projetos/${next.slug}`}><span>{next.title}</span><ArrowRight /></Link></div><div className="case-cta"><p>Quer conversar sobre desenvolvimento, sistemas ou automação?</p><Link href="/contato" className="button primary">Entrar em contato <ArrowRight /></Link></div></div></div></main> }
+import { ProjectArchitecture } from '@/components/projects/project-architecture'
+import { ProjectDecisions } from '@/components/projects/project-decisions'
+import { ProjectHeader } from '@/components/projects/project-header'
+import { ProjectLearnings } from '@/components/projects/project-learnings'
+import { ProjectNavigation, type ProjectNavigationItem } from '@/components/projects/project-navigation'
+import { ProjectNextSteps } from '@/components/projects/project-next-steps'
+import { ProjectOverview } from '@/components/projects/project-overview'
+import { ProjectProblems } from '@/components/projects/project-problems'
+import { ProjectResults } from '@/components/projects/project-results'
+import { ProjectSolutions } from '@/components/projects/project-solutions'
+import { ProjectTechnologies } from '@/components/projects/project-technologies'
+import { getProjectBySlug, projects } from '@/lib/projects'
+
+export function generateStaticParams() {
+  return projects.map((project) => ({ slug: project.slug }))
+}
+
+export default async function CaseStudy({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
+  const project = getProjectBySlug(projects, slug)
+  if (!project) notFound()
+
+  const projectIndex = projects.findIndex((item) => item.slug === project.slug)
+  const nextProject = projects[(projectIndex + 1) % projects.length]
+  const problems = project.caseStudy?.problems ?? []
+  const solutions = project.caseStudy?.solutions ?? []
+  const decisions = project.caseStudy?.decisions ?? []
+  const results = project.caseStudy?.results ?? []
+  const learnings = project.caseStudy?.learnings ?? []
+
+  const navigationItems: ProjectNavigationItem[] = [
+    { id: 'visao-geral', label: 'Visão geral' },
+    ...(problems.length ? [{ id: 'problemas', label: 'Problemas' }] : []),
+    ...(solutions.length ? [{ id: 'solucoes', label: 'Soluções' }] : []),
+    { id: 'tecnologias', label: 'Tecnologias' },
+    { id: 'arquitetura', label: 'Arquitetura' },
+    ...(decisions.length ? [{ id: 'decisoes', label: 'Decisões' }] : []),
+    ...(results.length ? [{ id: 'resultados', label: 'Resultados' }] : []),
+    ...(learnings.length ? [{ id: 'aprendizados', label: 'Aprendizados' }] : []),
+    { id: 'proximos-passos', label: 'Próximos passos' },
+  ]
+
+  return (
+    <main id={'top'} className={'container case-study'}>
+      <div className={'breadcrumbs'}>
+        <Link href={'/'}>Início</Link>
+        <span>/</span>
+        <Link href={'/projetos'}>Projetos</Link>
+        <span>/</span>
+        <span aria-current={'page'}>{project.title}</span>
+      </div>
+
+      <Link href={'/projetos'} className={'back-link'}>
+        <ArrowLeft aria-hidden />
+        Voltar aos projetos
+      </Link>
+
+      <ProjectHeader project={project} />
+
+      <div className={'case-layout'}>
+        <ProjectNavigation items={navigationItems} />
+        <div className={'case-content'}>
+          <ProjectOverview project={project} />
+          {!!problems.length && <ProjectProblems problems={problems} solutions={solutions} />}
+          {!!solutions.length && <ProjectSolutions solutions={solutions} problems={problems} />}
+          <ProjectTechnologies project={project} />
+          <ProjectArchitecture project={project} />
+          {!!decisions.length && <ProjectDecisions decisions={decisions} />}
+          {!!results.length && <ProjectResults results={results} />}
+          {!!learnings.length && <ProjectLearnings learnings={learnings} />}
+          <ProjectNextSteps />
+
+          <div className={'case-next'}>
+            <span className={'mono'}>PRÓXIMO PROJETO</span>
+            <Link href={'/projetos/' + nextProject.slug}>
+              <span>{nextProject.title}</span>
+              <ArrowRight aria-hidden />
+            </Link>
+          </div>
+
+          <div className={'case-cta'}>
+            <p>Quer conversar sobre desenvolvimento, sistemas ou automação?</p>
+            <Link href={'/contato'} className={'button primary'}>
+              Entrar em contato
+              <ArrowRight aria-hidden />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </main>
+  )
+}
