@@ -132,18 +132,26 @@
   transition: transform .2s, border-color .2s, box-shadow .2s;
 }
 
-.project-catalog .catalog-card-media {
-  aspect-ratio: 1910 / 943;
+.catalog-card.has-cover-reveal {
+  position: relative;
   overflow: hidden;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
 }
 
-.project-catalog .catalog-card-media img {
+.catalog-card-reveal {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  clip-path: polygon(0 100%, 0 100%, 0 100%);
+}
+
+.catalog-card-reveal img {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
 }
 
 .catalog-card:hover,
@@ -219,12 +227,40 @@
 }
 
 .catalog-link {
+  position: relative;
+  z-index: 3;
   width: fit-content;
   margin-top: auto;
+  border-radius: 2px;
+  transition: color .2s, background-color .2s, box-shadow .2s;
 }
 
 .catalog-link svg {
   width: 16px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .catalog-card.has-cover-reveal .catalog-card-reveal {
+    transition:
+      clip-path 640ms cubic-bezier(.22, 1, .36, 1),
+      opacity 0s linear 640ms;
+  }
+
+  .catalog-card.has-cover-reveal:has(.catalog-link:hover) .catalog-card-reveal,
+  .catalog-card.has-cover-reveal:has(.catalog-link:focus-visible) .catalog-card-reveal {
+    opacity: 1;
+    clip-path: polygon(0 -100%, 200% 100%, 0 100%);
+    transition:
+      clip-path 640ms cubic-bezier(.22, 1, .36, 1),
+      opacity 0s;
+  }
+
+  .catalog-card.has-cover-reveal:has(.catalog-link:hover) .catalog-link,
+  .catalog-card.has-cover-reveal:has(.catalog-link:focus-visible) .catalog-link {
+    background: rgb(9 14 23 / 88%);
+    box-shadow: 0 0 0 9px rgb(9 14 23 / 88%);
+    color: #fff;
+  }
 }
 
 .empty-state {
@@ -285,5 +321,10 @@
   .catalog-card:hover,
   .catalog-card:focus-within {
     transform: none;
+  }
+
+  .catalog-card.has-cover-reveal .catalog-card-reveal,
+  .catalog-card.has-cover-reveal .catalog-link {
+    transition: none;
   }
 }

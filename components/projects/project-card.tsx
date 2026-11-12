@@ -22,12 +22,12 @@ export function ProjectCard({ project }: ProjectCardProps) {
   )
 
   return (
-    <article className={'catalog-card'}>
+    <article className={cover ? 'catalog-card has-cover-reveal' : 'catalog-card'}>
       {cover ? (
-        <div className={'catalog-card-media'}>
+        <div className={'catalog-card-reveal'} aria-hidden={'true'}>
           <img
             src={cover.src}
-            alt={cover.alt}
+            alt={''}
             width={cover.width ?? 1600}
             height={cover.height ?? 900}
             loading={'lazy'}
