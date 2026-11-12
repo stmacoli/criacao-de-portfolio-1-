@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict'
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
 import test from 'node:test'
 // @ts-expect-error -- Node's strip-types runner requires the explicit TypeScript extension.
 import { studioZileideRocha } from './studio-zileide-rocha.ts'
@@ -23,14 +25,21 @@ test('aparece nos filtros profissionais, Web, produção e tecnologias', () => {
   assert.ok(getProjectTechnologies(studioZileideRocha).includes('Cloudflare Pages'))
 })
 
-test('preserva datas, histórico e itens exploratórios sem mídia inexistente', () => {
+test('preserva datas, histórico e itens exploratórios com mídia real', () => {
   const caseStudy = studioZileideRocha.caseStudy
   assert.equal(caseStudy?.versions?.[0].releasedAt, '2026-11-11')
   assert.equal(caseStudy?.versions?.[1].releasedAt, '2026-11-12')
   assert.equal(caseStudy?.incidents?.length, 7)
   assert.equal(caseStudy?.roadmap?.every((item) => item.commitment === 'exploratory'), true)
-  assert.equal(caseStudy?.media, undefined)
-  assert.equal(studioZileideRocha.coverImage, '')
+  const media = caseStudy?.media ?? []
+  assert.equal(media.length, 13)
+  assert.equal(media.filter((item) => item.device === 'desktop').length, 5)
+  assert.equal(media.filter((item) => item.device === 'mobile').length, 8)
+  assert.equal(new Set(media.map((item) => item.src)).size, 13)
+  assert.equal(media.every((item) =>
+    existsSync(join(process.cwd(), 'public', item.src.slice(1))),
+  ), true)
+  assert.equal(studioZileideRocha.coverImage, '/studio_zileide_rocha/pc-hero.png')
   assert.deepEqual(studioZileideRocha.gallery, [])
 })
 

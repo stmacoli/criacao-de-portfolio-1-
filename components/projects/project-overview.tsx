@@ -10,7 +10,7 @@ export function ProjectOverview({ project }: { project: Project }) {
   return (
     <ProjectSection id={'visao-geral'} eyebrow={'VISÃO GERAL'} title={'O ponto de partida.'}>
       <div className={'case-prose'}>
-        <p>{project.description}</p>
+        <p>{caseStudy?.context ?? project.description}</p>
         {!hasStructuredProblems && (
           <>
             <h3>Necessidade</h3>

@@ -30,8 +30,12 @@ export interface ProjectLink {
 export interface ProjectMedia {
   src: string
   alt: string
+  title?: string
   caption?: string
   kind?: 'cover' | 'screenshot' | 'diagram' | 'video' | 'document'
+  device?: 'desktop' | 'mobile'
+  width?: number
+  height?: number
 }
 
 export interface ClientInformation {

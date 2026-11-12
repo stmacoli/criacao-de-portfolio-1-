@@ -4,6 +4,7 @@ import type {
   ProjectClassification,
   ProjectLifecycleStatus,
   ProjectStatus,
+  Project,
   PublicationStatus,
   RoadmapCommitment,
   RoadmapPriority,
@@ -48,6 +49,22 @@ export const publicationLabels: Record<PublicationStatus, string> = {
   demo: 'Demonstração disponível',
   restricted: 'Acesso restrito',
   unpublished: 'Não publicado',
+}
+
+export function getProjectStateLabel(
+  project: Pick<Project, 'lifecycleStatus' | 'status'>,
+) {
+  return project.lifecycleStatus
+    ? lifecycleLabels[project.lifecycleStatus]
+    : legacyStatusLabels[project.status]
+}
+
+export function getDistinctPublicationLabel(
+  project: Pick<Project, 'lifecycleStatus' | 'status' | 'publicationStatus'>,
+) {
+  if (!project.publicationStatus) return undefined
+  const publication = publicationLabels[project.publicationStatus]
+  return publication === getProjectStateLabel(project) ? undefined : publication
 }
 
 export const solutionStatusLabels: Record<SolutionStatus, string> = {

@@ -2,8 +2,8 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import {
   classificationLabels,
-  lifecycleLabels,
-  publicationLabels,
+  getDistinctPublicationLabel,
+  getProjectStateLabel,
 } from './project-labels'
 import { getProjectTechnologies, type Project } from '@/lib/projects'
 
@@ -15,12 +15,26 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const technologies = getProjectTechnologies(project)
   const visibleTechnologies = technologies.slice(0, 4)
   const remainingTechnologies = technologies.length - visibleTechnologies.length
-  const state = project.lifecycleStatus
-    ? lifecycleLabels[project.lifecycleStatus]
-    : project.status
+  const state = getProjectStateLabel(project)
+  const publication = getDistinctPublicationLabel(project)
+  const cover = project.caseStudy?.media?.find(
+    (item) => item.kind === 'cover' && item.src,
+  )
 
   return (
     <article className={'catalog-card'}>
+      {cover ? (
+        <div className={'catalog-card-media'}>
+          <img
+            src={cover.src}
+            alt={cover.alt}
+            width={cover.width ?? 1600}
+            height={cover.height ?? 900}
+            loading={'lazy'}
+            decoding={'async'}
+          />
+        </div>
+      ) : null}
       <div className={'catalog-card-header'}>
         <span className={'mono catalog-index'}>{project.id}</span>
         <span className={'catalog-category'}>{project.category}</span>
@@ -32,8 +46,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
             <span>{classificationLabels[project.classification]}</span>
           ) : null}
           <span className={'catalog-state'}>{state}</span>
-          {project.publicationStatus ? (
-            <span>{publicationLabels[project.publicationStatus]}</span>
+          {publication ? (
+            <span>{publication}</span>
           ) : null}
         </div>
 
